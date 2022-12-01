@@ -2,12 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
-import { AppBar, Box, Divider, Grid, IconButton, Menu, MenuItem, Tab, Tabs, TextField, Toolbar } from '@mui/material';
+import { AppBar, Box, Card, CardContent, Container, Divider, Grid, Icon, IconButton, Menu, MenuItem, Tab, Tabs, TextField, Toolbar } from '@mui/material';
 import { borderRadius } from '@mui/system';
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import SortIcon from '@mui/icons-material/Sort';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
 import YouTube from 'react-youtube';
 
 import Typography from '@mui/material/Typography'
@@ -35,7 +39,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         listCard = 
-            <List sx={{width: '100%', bgcolor: 'background.paper', mb:"20px" }}>
+            <List sx={{width: '100%', bgcolor: 'background.paper', mb:"20px", maxHeight: 600, overflow: 'auto' }}>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard
@@ -120,7 +124,30 @@ const HomeScreen = () => {
                     <Tab label="Player"/>
                     <Tab label="Comments"/>
                 </Tabs>
-                <YouTube videoId='2Fz3zFqLc3E'></YouTube>
+                <Box sx={{ml: 6, mt: 2}}><YouTube videoId='2Fz3zFqLc3E'></YouTube> </Box>
+                    <Box sx={{bgColor: 'blue'}}>
+                        <Card>
+                            <CardContent>
+                                <Typography component="div" variant="h6" sx={{fontWeight: 700}}>Now Playing</Typography>
+                                <Typography component="div" variant='p'>Playlist:</Typography>
+                                <Typography component="div" variant='p'>Song #:</Typography>
+                                <Typography component="div" variant='p'>Title:</Typography>
+                                <Typography component="div" variant='p'>Artist:</Typography>
+                                <IconButton>
+                                    <SkipPreviousIcon fontSize='large'></SkipPreviousIcon>
+                                </IconButton>
+                                <IconButton>
+                                    <PauseIcon fontSize='large'></PauseIcon>
+                                </IconButton>
+                                <IconButton>
+                                    <PlayArrowIcon fontSize='large'></PlayArrowIcon>
+                                </IconButton>
+                                <IconButton>
+                                    <SkipNextIcon fontSize='large'></SkipNextIcon>
+                                </IconButton>
+                            </CardContent>
+                        </Card>
+                    </Box>
             </Box>
         </Grid>
         <Grid item xs={12}>

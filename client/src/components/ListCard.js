@@ -96,7 +96,7 @@ function ListCard(props) {
                     primary={idNamePair.name} 
                     secondary={"By:  " + userName} 
                     primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 40}}}
-                    secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'white', fontSize: 20}}}
+                    secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'black', fontSize: 20}}}
                 />
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
