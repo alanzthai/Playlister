@@ -121,7 +121,7 @@ function ListCard(props) {
                 />
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                <ThumbUpIcon style={{fontSize:'36pt', color: 'white'}}/>
+                <ThumbUpIcon style={{fontSize:'36pt', color: 'black'}}/>
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
@@ -129,7 +129,7 @@ function ListCard(props) {
             </Box>
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                                <ThumbDownIcon style={{fontSize:'36pt', color: 'white'}} />
+                                <ThumbDownIcon style={{fontSize:'36pt', color: 'black'}} />
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>

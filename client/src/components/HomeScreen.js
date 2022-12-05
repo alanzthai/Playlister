@@ -108,13 +108,13 @@ const HomeScreen = () => {
             </AppBar>
         </Grid>
         <Grid item xs={6}>
-            <Box sx={{backgroundColor: '#4e76cb'}}>
+            <Box >
                 { listCard }
             </Box>
         </Grid>
         <Grid item xs={6}>
-            <Box >
-                <Tabs textColor='white'>
+            <Box sx={{backgroundColor: '#8000F00F'}}>
+                <Tabs textColor='black'>
                     <Tab label="Player"/>
                     <Tab label="Comments"/>
                 </Tabs>
