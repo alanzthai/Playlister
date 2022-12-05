@@ -194,7 +194,7 @@ body {
 }
 
 .unselected-list-card {
-  background-color: var(--swatch-complement);
+  background-color: #8000F00F;
 }
 
 .list-card-button {

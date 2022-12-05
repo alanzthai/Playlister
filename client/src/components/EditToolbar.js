@@ -24,9 +24,6 @@ function EditToolbar() {
     function handleRedo() {
         store.redo();
     }
-    function handleClose() {
-        store.closeCurrentList();
-    }
     return (
         <div id="edit-toolbar">
             <Button
@@ -49,13 +46,6 @@ function EditToolbar() {
                 onClick={handleRedo}
                 variant="contained">
                     <RedoIcon />
-            </Button>
-            <Button 
-                disabled={!store.canClose()}
-                id='close-button'
-                onClick={handleClose}
-                variant="contained">
-                    <CloseIcon />
             </Button>
         </div>
     )

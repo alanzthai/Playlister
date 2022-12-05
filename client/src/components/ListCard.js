@@ -17,6 +17,7 @@ import WorkspaceScreen from './WorkspaceScreen';
 import SongCard from './SongCard';
 import EditToolbar from './EditToolbar';
 import MUIDeleteModal from './MUIDeleteModal';
+import AddIcon from '@mui/icons-material/Add';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -74,6 +75,10 @@ function ListCard(props) {
 
     async function handleDuplicateList(event, id) {
         
+    }
+
+    function handleAddNewSong() {
+        store.addNewSong();
     }
 
     function handleKeyPress(event) {
@@ -141,35 +146,27 @@ function ListCard(props) {
             </Box>
         </ListItem>
 
-    let buttonList = 
-    <Stack direction='row' justifyContent='space-between'>
-        <Box display="flex" 
-        p={2} m={1} 
-        justifyContent='flex-start' 
-        alignItems='flex-start'
-        >
-            <EditToolbar/>
-        </Box>
-        <Box display="flex" 
-        p={2} m={1} 
-        justifyContent='flex-end' 
-        alignItems='flex-end'
-        >
-            <Stack direction='row' spacing={2}>
-                <Button variant='contained' onClick={(event) => {
-                    handlePublishList(event, idNamePair._id)
-                }}>Publish</Button>
-                <Button variant='contained'
-                onClick={(event) => {
-                    handleDeleteList(event, idNamePair._id)
-                }}
-                >Delete</Button>
-                <Button variant='contained' onClick={(event) => {
-                    handleDuplicateList(event, idNamePair._id)
-                }}>Duplicate</Button>
-            </Stack>
-        </Box>
-    </Stack>
+let buttonList = 
+<Stack direction='row' justifyContent='space-between'>
+    <Box display="flex" 
+    p={2} m={1} 
+    justifyContent='flex-start' 
+    alignItems='flex-start'
+    >
+        <EditToolbar/>
+    </Box>
+    <Box display="flex" 
+    p={2} m={1} 
+    justifyContent='flex-end' 
+    alignItems='flex-end'
+    >
+        <Stack direction='row' spacing={2}>
+            <Button variant='contained'>Publish</Button>
+            <Button variant='contained'>Delete</Button>
+            <Button variant='contained'>Duplicate</Button>
+        </Stack>
+    </Box>
+</Stack>
 
     if(store.currentList) {
         return (
@@ -194,7 +191,7 @@ function ListCard(props) {
                             />
                         ))  
                     }
-
+                    { buttonList }
                     <Stack direction='row' justifyContent='space-between'>
                         <Typography variant='h6' sx={{pl: 4, color: 'black'}}>Published: </Typography>
                         <Typography variant='h6' sx={{pr: 4, color: 'black'}}>Listens: </Typography>
