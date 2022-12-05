@@ -6,11 +6,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import { Divider, ListItemText, Typography } from '@mui/material';
+import { Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import AuthContext from '../auth';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import WorkspaceScreen from './WorkspaceScreen';
+import SongCard from './SongCard';
+import EditToolbar from './EditToolbar';
+import MUIDeleteModal from './MUIDeleteModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -24,6 +30,7 @@ function ListCard(props) {
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
+    const [ listOpen, setListOpen] = useState(false);
     const { idNamePair, selected } = props;
 
     function handleLoadList(event, id) {
@@ -37,6 +44,7 @@ function ListCard(props) {
 
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
+            setListOpen(!listOpen);
         }
     }
 
@@ -58,6 +66,14 @@ function ListCard(props) {
         let _id = event.target.id;
         _id = ("" + _id).substring("delete-list-".length);
         store.markListForDeletion(id);
+    }
+
+    async function handlePublishList(event, id) {
+
+    }
+
+    async function handleDuplicateList(event, id) {
+        
     }
 
     function handleKeyPress(event) {
@@ -115,30 +131,78 @@ function ListCard(props) {
                 <Typography>0</Typography>
             </Box>
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                                <ExpandMoreIcon style={{fontSize:'48pt', color: 'white'}} />
-                            </IconButton>
+            <ListItemButton 
+                onClick={(event) => {
+                    handleLoadList(event, idNamePair._id)
+                }}
+                style={{fontSize:'48pt', color: 'white'}}>
+                    {listOpen ? <ExpandLess/> : <ExpandMore/>}
+                </ListItemButton>
             </Box>
         </ListItem>
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Playlist Name"
-                name="name"
-                autoComplete="Playlist Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
+    let buttonList = 
+    <Stack direction='row' justifyContent='space-between'>
+        <Box display="flex" 
+        p={2} m={1} 
+        justifyContent='flex-start' 
+        alignItems='flex-start'
+        >
+            <EditToolbar/>
+        </Box>
+        <Box display="flex" 
+        p={2} m={1} 
+        justifyContent='flex-end' 
+        alignItems='flex-end'
+        >
+            <Stack direction='row' spacing={2}>
+                <Button variant='contained' onClick={(event) => {
+                    handlePublishList(event, idNamePair._id)
+                }}>Publish</Button>
+                <Button variant='contained'
+                onClick={(event) => {
+                    handleDeleteList(event, idNamePair._id)
+                }}
+                >Delete</Button>
+                <Button variant='contained' onClick={(event) => {
+                    handleDuplicateList(event, idNamePair._id)
+                }}>Duplicate</Button>
+            </Stack>
+        </Box>
+    </Stack>
+
+    if(store.currentList) {
+        return (
+            <div>
+            {cardElement}
+            <Collapse in={listOpen} timeout='auto' unmountOnExit>
+                <List 
+                    component='div'
+                    disablePadding
+                    id="playlist-cards"
+                    sx={{ width: '100%', pb: 1}}
+            >
+                    {
+
+                        store.currentList.songs.map((song, index) => (
+                            <SongCard
+                                id={'playlist-song-' + (index)}
+                                key={'playlist-song-' + (index)}
+                                index={index}
+                                song={song}
+                                sx={{bgcolor: 'white'}}
+                            />
+                        ))  
+                    }
+
+                    <Stack direction='row' justifyContent='space-between'>
+                        <Typography variant='h6' sx={{pl: 4, color: 'black'}}>Published: </Typography>
+                        <Typography variant='h6' sx={{pr: 4, color: 'black'}}>Listens: </Typography>
+                    </Stack>
+                </List>   
+            </Collapse>
+        </div>
+        )
     }
     return (
         cardElement

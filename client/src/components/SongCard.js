@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import Button from '@mui/material/Button';
+import AuthContext from '../auth';
+import { Link, ListItemButton, Typography } from '@mui/material';
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
     const { song, index } = props;
+    const { auth } = useContext(AuthContext);
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);

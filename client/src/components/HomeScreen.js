@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import MUIDeleteModal from './MUIDeleteModal'
+import MUIDeleteModal from './MUIDeleteModal';
+import MUIRemoveSongModal from './MUIRemoveSongModal';
 import { AppBar, Box, Card, CardContent, Container, Divider, Grid, Icon, IconButton, Menu, MenuItem, Tab, Tabs, TextField, Toolbar } from '@mui/material';
 import { borderRadius } from '@mui/system';
 import HomeIcon from '@mui/icons-material/Home';
@@ -50,14 +51,6 @@ const HomeScreen = () => {
                 ))
                 
             }
-            <Fab sx={{transform:"translate(1150%, 10%)"}}
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}
-            >
-                <AddIcon />
-            </Fab>
             </List>;
     }
 
@@ -151,11 +144,24 @@ const HomeScreen = () => {
             </Box>
         </Grid>
         <Grid item xs={12}>
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: '#4e76cb'}}>
+                            <Fab 
+                                color="primary" 
+                                aria-label="add"
+                                id="add-list-button"
+                                onClick={handleCreateNewList}
+                            >
+                                <AddIcon />
+                            </Fab>
+                                <Typography variant="h4" color="white">Your Lists</Typography>
+                    </Box>
         <div id="list-selector-heading">
                 <Typography variant="h4" color="black">Your Lists</Typography>
         </div>
         </Grid>
         { sortMenu }
+        <MUIDeleteModal/>
+        <MUIRemoveSongModal/>
     </Grid>
         )
 }
