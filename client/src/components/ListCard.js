@@ -121,7 +121,7 @@ function ListCard(props) {
                 />
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                <ThumbUpIcon style={{fontSize:'36pt', color: 'black'}}/>
+                <ThumbUpIcon style={{fontSize:'24pt', color: 'black'}}/>
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
@@ -129,7 +129,7 @@ function ListCard(props) {
             </Box>
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                                <ThumbDownIcon style={{fontSize:'36pt', color: 'black'}} />
+                                <ThumbDownIcon style={{fontSize:'24pt', color: 'black'}} />
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>
@@ -139,9 +139,8 @@ function ListCard(props) {
             <ListItemButton 
                 onClick={(event) => {
                     handleLoadList(event, idNamePair._id)
-                }}
-                style={{fontSize:'48pt', color: 'white'}}>
-                    {listOpen ? <ExpandLess/> : <ExpandMore/>}
+                }}>
+                    {listOpen ? <ExpandLess style={{fontSize:'24pt', color: 'black'}}/> : <ExpandMore style={{fontSize:'24pt', color: 'black'}}/>}
                 </ListItemButton>
             </Box>
         </ListItem>

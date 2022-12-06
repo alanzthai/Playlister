@@ -120,7 +120,7 @@ const HomeScreen = () => {
                 </Tabs>
                 <Box sx={{ml: 6, mt: 2}}><YouTube videoId='2Fz3zFqLc3E'></YouTube> </Box>
                     <Box sx={{bgColor: 'blue'}}>
-                        <Card>
+                        <Card sx={{backgroundColor: 'white'}}>
                             <CardContent>
                                 <Typography component="div" variant="h6" sx={{fontWeight: 700}}>Now Playing</Typography>
                                 <Typography component="div" variant='p'>Playlist:</Typography>
