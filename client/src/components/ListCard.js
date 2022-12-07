@@ -73,7 +73,17 @@ function ListCard(props) {
     }
 
     function handleLike(event) {
-        list.likes = list.likes + 1;
+        event.stopPropagation();
+        let index = list.dislikes.indexOf(list.ownerEmail);
+        if(index == -1) {
+            index = list.likes.indexOf(list.ownerEmail);
+            if(index != -1) {
+                list.likes.splice(index, 1);
+            }
+            list.dislikes.push(list.ownerEmail);
+        } else {
+            list.dislikes.splice(index, 1);
+        }
         store.updateList(list._id, list);
     }
 
@@ -121,10 +131,6 @@ function ListCard(props) {
         key={list._id}
             sx={{borderRadius:"25px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1 }}
             style={{transform:"translate(1%,0%)", width: '98%', fontSize: '48pt' }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, list._id)
-            }}
         >
             <ListItemText 
                     primary={list.name} 
