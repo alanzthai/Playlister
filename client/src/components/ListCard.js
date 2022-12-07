@@ -44,8 +44,11 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-            setListOpen(!listOpen);
+            if(!selected) {
+                store.setCurrentList(id);
+            } else {
+                store.closeCurrentList();
+            }
         }
     }
 
@@ -150,7 +153,7 @@ function ListCard(props) {
                 onClick={(event) => {
                     handleLoadList(event, list._id)
                 }}>
-                    {listOpen ? <ExpandLess style={{fontSize:'24pt', color: 'black'}}/> : <ExpandMore style={{fontSize:'24pt', color: 'black'}}/>}
+                    {selected ? <ExpandLess style={{fontSize:'24pt', color: 'black'}}/> : <ExpandMore style={{fontSize:'24pt', color: 'black'}}/>}
                 </ListItemButton>
             </Box>
         </ListItem>
@@ -177,11 +180,11 @@ let buttonList =
     </Box>
 </Stack>
 
-    if(store.currentList) {
+    if(selected) {
         return (
             <div>
             {cardElement}
-            <Collapse in={listOpen} timeout='auto' unmountOnExit>
+            <Collapse in={selected} timeout='auto' unmountOnExit>
                 <List 
                     component='div'
                     disablePadding

@@ -41,6 +41,10 @@ function SongCard(props) {
         store.showRemoveSongModal(index, song);
     }
     function handleClick(event) {
+        if (event.detail === 1) {
+            console.log("current song clicked");
+            store.setCurrentSong(song, index);
+        }
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
             console.log("double clicked");
@@ -61,6 +65,7 @@ function SongCard(props) {
             onDrop={handleDrop}
             draggable="true"
             onClick={handleClick}
+            selected={song === store.currentSong}
         >
             {index + 1}.
             <a
