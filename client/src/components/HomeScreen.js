@@ -124,6 +124,14 @@ const HomeScreen = () => {
         </Grid>
         <Grid item xs={12}>
         <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: '#4e76cb'}}>
+                            <Fab 
+                                color="primary" 
+                                aria-label="add"
+                                id="add-list-button"
+                                onClick={handleCreateNewList}
+                            >
+                                <AddIcon />
+                            </Fab>
                                 <Typography variant="h4" color="white">Your Lists</Typography>
                     </Box>
         <div id="list-selector-heading">
