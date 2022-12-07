@@ -157,7 +157,7 @@ export default function YoutubePlayer() {
                     <Typography component="div" variant='p' sx={{color: 'black', fontWeight: 700, userSelect: 'none'}}>
                         Artist: {artist}</Typography>
                 </CardContent>
-                <Box sx={{pb: 1}}>
+                <Box sx={{pb: 1, }}>
                     <IconButton onClick={decSong}>
                         <SkipPreviousIcon fontSize='large' sx={{color: 'black'}}></SkipPreviousIcon>
                     </IconButton>

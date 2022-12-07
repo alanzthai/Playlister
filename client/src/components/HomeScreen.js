@@ -123,7 +123,7 @@ const HomeScreen = () => {
             </Box>
         </Grid>
         <Grid item xs={12}>
-        <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: '#4e76cb'}}>
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: 'black'}}>
                             <Fab 
                                 color="primary" 
                                 aria-label="add"

@@ -90,7 +90,7 @@ body {
 
 .top5-button:hover {
   cursor: pointer;
-  color: black;
+  color: white;
 }
 
 .top5-button-disabled {
@@ -184,8 +184,7 @@ body {
 
 .unselected-list-card:hover {
   cursor: pointer;
-  background-color: var(--swatch-contrast);
-  color: white;
+  background-color: white;
 }
 
 .selected-list-card {

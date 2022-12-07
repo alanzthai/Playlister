@@ -138,7 +138,7 @@ function ListCard(props) {
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-            <Typography>{list.likes}</Typography>
+            <Typography>{list.likes.length}</Typography>
             </Box>
             <Box sx={{p: 1}}>
             <IconButton onClick={handleDislike} aria-label='edit'>
@@ -146,7 +146,7 @@ function ListCard(props) {
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-            <Typography>{list.dislikes}</Typography>
+            <Typography>{list.dislikes.length}</Typography>
             </Box>
             <Box sx={{p: 1}}>
             <ListItemButton 
@@ -205,8 +205,8 @@ let buttonList =
                     }
                     { buttonList }
                     <Stack direction='row' justifyContent='space-between'>
-                    <Typography variant='h6' sx={{pl: 4, color: 'white', userSelect: 'none'}}>Published: </Typography>
-                        <Typography variant='h6' sx={{pr: 4, color: 'white', userSelect: 'none'}}>Listens: </Typography>
+                    <Typography variant='h6' sx={{pl: 4, color: 'black', userSelect: 'none'}}>Published: </Typography>
+                        <Typography variant='h6' sx={{pr: 4, color: 'black', userSelect: 'none'}}>Listens: </Typography>
                     </Stack>
                 </List>   
             </Collapse>
