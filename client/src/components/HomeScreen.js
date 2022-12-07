@@ -114,7 +114,7 @@ const HomeScreen = () => {
             </Box>
         </Grid>
         <Grid item xs={6}>
-            <Box sx={{backgroundColor: '#8000F00F'}}>
+            <Box>
                 <Tabs>
                     <Tab label="Player"/>
                     <Tab label="Comments"/>
@@ -125,7 +125,7 @@ const HomeScreen = () => {
         <Grid item xs={12}>
         <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: 'black'}}>
                             <Fab 
-                                color="primary" 
+                                color="#8000F00F" 
                                 aria-label="add"
                                 id="add-list-button"
                                 onClick={handleCreateNewList}
