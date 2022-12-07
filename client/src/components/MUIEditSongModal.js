@@ -4,7 +4,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import Divider from '@mui/material/Divider';
 
 const style1 = {
@@ -23,9 +23,16 @@ const style1 = {
 
 export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [ title, setTitle ] = useState(store.currentSong.title);
-    const [ artist, setArtist ] = useState(store.currentSong.artist);
-    const [ youTubeId, setYouTubeId ] = useState(store.currentSong.youTubeId);
+    
+    let title = ""
+    let artist = ""
+    let youTubeId = ""
+
+    if(store.currentSong) {
+        title = store.currentSong.title;
+        artist = store.currentSong.artist;
+        youTubeId = store.currentSong.youTubeId;
+    }
 
     function handleConfirmEditSong() {
         let newSongData = {
@@ -41,40 +48,72 @@ export default function MUIEditSongModal() {
     }
 
     function handleUpdateTitle(event) {
-        setTitle(event.target.value);
+        title = event.target.value;
     }
 
     function handleUpdateArtist(event) {
-        setArtist(event.target.value);
+        artist = event.target.value;
     }
 
     function handleUpdateYouTubeId(event) {
-        setYouTubeId(event.target.value);
+        youTubeId = event.target.value;
     }
 
     return (
-        <Modal
-            open={store.currentModal == "EDIT_SONG"}
+        <Dialog
+            open={store.currentModal === "EDIT_SONG"}
+            sx={{color: 'black' }}
         >
-        <Box sx={style1}>
-            <div id="edit-song-modal" data-animation="slideInOutLeft">
-            <Typography sx={{fontWeight: 'bold'}} id="modal-modal-title" variant="h4" component="h2">
-                Edit Song
-            </Typography>
-            <Divider sx={{borderBottomWidth: 5, p: '5px', transform: 'translate(-5.5%, 0%)', width:377}}/>
-            <Typography sx={{mt: "10px", color: "#702963", fontWeight:"bold", fontSize:"30px"}} id="modal-modal-title" variant="h6" component="h2">
-                Title: <input id="edit-song-modal-title-textfield" className='modal-textfield' type="text" defaultValue={title} onChange={handleUpdateTitle} />
-            </Typography>
-            <Typography sx={{color: "#702963", fontWeight:"bold", fontSize:"30px"}} id="modal-modal-artist" variant="h6" component="h2">
-            Artist: <input id="edit-artist-modal-title-textfield" className='modal-textfield' type="text" defaultValue={artist} onChange={handleUpdateArtist} />
-            </Typography>
-            <Typography sx={{color: "#702963", fontWeight:"bold", fontSize:"25px"}} id="modal-modal-youTubeId" variant="h6" component="h2">
-                YouTubeId: <input id="edit-artist-modal-youTubeId-textfield" className='modal-textfield' type="text" defaultValue={youTubeId} onChange={handleUpdateYouTubeId} />
-            </Typography>
-            <Button sx={{color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px"}} variant="outlined" id="edit-song-confirm-button" onClick={handleConfirmEditSong}>Confirm</Button>
-            <Button sx={{opacity: 0.80, color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px", ml:"197px"}} variant="outlined" id="edit-song-confirm-button" onClick={handleCancelEditSong}>Cancel</Button>
-            </div>
-        </Box>
-        </Modal>
+                <DialogTitle><b>Edit Song</b></DialogTitle>
+                <DialogContent
+                    id="edit-song-modal-content"
+                    className="modal-center">
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="edit-song-modal-title-textfield"
+                        label="Title:"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        defaultValue={title}
+                        onChange={handleUpdateTitle}
+                    />
+                    <TextField
+                        autoFocus margin='dense'
+                        id="edit-song-modal-title-textfield" 
+                        className='modal-textfield' 
+                        label="Artist:"
+                        type="text" 
+                        fullWidth
+                        variant='standard'
+                        defaultValue={artist} 
+                        onChange={handleUpdateArtist} 
+                    />
+                    <TextField
+                        autoFocus margin='dense'
+                        id="edit-song-modal-title-textfield" 
+                        className='modal-textfield' 
+                        label="You Tube Id:"
+                        type="text" 
+                        fullWidth
+                        variant='standard'
+                        defaultValue={youTubeId} 
+                        onChange={handleUpdateYouTubeId} 
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant='contained'
+                        onClick={handleConfirmEditSong}>
+                            Confirm
+                        </Button>
+                    <Button
+                        variant='contained'
+                        onClick={handleCancelEditSong}>
+                            Cancel
+                        </Button>
+                </DialogActions>
+        </Dialog>
     );
 }

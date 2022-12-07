@@ -15,6 +15,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import YouTube from 'react-youtube';
+import YoutubePlayer from './YoutubePlayer';
 
 import Typography from '@mui/material/Typography'
 import AddIcon from '@mui/icons-material/Add';
@@ -32,7 +33,7 @@ const HomeScreen = () => {
     const isMenuOpen = Boolean(anchorEl);
 
     useEffect(() => {
-        store.loadIdNamePairs();
+        store.loadPlaylists();
     }, []);
 
     function handleCreateNewList() {
@@ -43,11 +44,11 @@ const HomeScreen = () => {
         listCard = 
             <List sx={{width: '100%', bgcolor: 'background.paper', mb:"20px", maxHeight: 600, overflow: 'auto' }}>
             {
-                store.idNamePairs.map((pair) => (
+                store.playlists.map((list) => (
                     <ListCard
-                        key={pair._id}
-                        idNamePair={pair}
-                        selected={false}
+                    key={list._id}
+                    list={list}
+                    selected={store.currentList && (list._id === store.currentList._id)}
                     />
                 ))
                 
@@ -114,46 +115,15 @@ const HomeScreen = () => {
         </Grid>
         <Grid item xs={6}>
             <Box sx={{backgroundColor: '#8000F00F'}}>
-                <Tabs textColor='black'>
+                <Tabs>
                     <Tab label="Player"/>
                     <Tab label="Comments"/>
                 </Tabs>
-                <Box sx={{ml: 6, mt: 2}}><YouTube videoId='2Fz3zFqLc3E'></YouTube> </Box>
-                    <Box sx={{bgColor: 'blue'}}>
-                        <Card sx={{backgroundColor: 'white'}}>
-                            <CardContent>
-                                <Typography component="div" variant="h6" sx={{fontWeight: 700}}>Now Playing</Typography>
-                                <Typography component="div" variant='p'>Playlist:</Typography>
-                                <Typography component="div" variant='p'>Song #:</Typography>
-                                <Typography component="div" variant='p'>Title:</Typography>
-                                <Typography component="div" variant='p'>Artist:</Typography>
-                                <IconButton>
-                                    <SkipPreviousIcon fontSize='large'></SkipPreviousIcon>
-                                </IconButton>
-                                <IconButton>
-                                    <PauseIcon fontSize='large'></PauseIcon>
-                                </IconButton>
-                                <IconButton>
-                                    <PlayArrowIcon fontSize='large'></PlayArrowIcon>
-                                </IconButton>
-                                <IconButton>
-                                    <SkipNextIcon fontSize='large'></SkipNextIcon>
-                                </IconButton>
-                            </CardContent>
-                        </Card>
-                    </Box>
+                <YoutubePlayer/>
             </Box>
         </Grid>
         <Grid item xs={12}>
         <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: '#4e76cb'}}>
-                            <Fab 
-                                color="primary" 
-                                aria-label="add"
-                                id="add-list-button"
-                                onClick={handleCreateNewList}
-                            >
-                                <AddIcon />
-                            </Fab>
                                 <Typography variant="h4" color="white">Your Lists</Typography>
                     </Box>
         <div id="list-selector-heading">
@@ -163,6 +133,7 @@ const HomeScreen = () => {
         { sortMenu }
         <MUIDeleteModal/>
         <MUIRemoveSongModal/>
+        <MUIEditSongModal/>
     </Grid>
         )
 }

@@ -32,7 +32,7 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const [ listOpen, setListOpen] = useState(false);
-    const { idNamePair, selected } = props;
+    const { list, selected } = props;
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -67,6 +67,16 @@ function ListCard(props) {
         let _id = event.target.id;
         _id = ("" + _id).substring("delete-list-".length);
         store.markListForDeletion(id);
+    }
+
+    function handleLike(event) {
+        list.likes = list.likes + 1;
+        store.updateList(list._id, list);
+    }
+
+    function handleDislike(event) {
+        list.dislikes = list.dislikes + 1;
+        store.updateList(list._id, list);
     }
 
     async function handlePublishList(event, id) {
@@ -104,41 +114,41 @@ function ListCard(props) {
     let userName = auth.user.firstName + ' ' + auth.user.lastName;
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+        id={list._id}
+        key={list._id}
             sx={{borderRadius:"25px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1 }}
             style={{transform:"translate(1%,0%)", width: '98%', fontSize: '48pt' }}
             button
             onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
+                handleLoadList(event, list._id)
             }}
         >
             <ListItemText 
-                    primary={idNamePair.name} 
+                    primary={list.name} 
                     secondary={"By:  " + userName} 
                     primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 40}}}
                     secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'black', fontSize: 20}}}
                 />
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+            <IconButton onClick={handleLike} aria-label='edit'>
                 <ThumbUpIcon style={{fontSize:'24pt', color: 'black'}}/>
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>0</Typography>
+            <Typography>{list.likes}</Typography>
             </Box>
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+            <IconButton onClick={handleDislike} aria-label='edit'>
                                 <ThumbDownIcon style={{fontSize:'24pt', color: 'black'}} />
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>0</Typography>
+            <Typography>{list.dislikes}</Typography>
             </Box>
             <Box sx={{p: 1}}>
             <ListItemButton 
                 onClick={(event) => {
-                    handleLoadList(event, idNamePair._id)
+                    handleLoadList(event, list._id)
                 }}>
                     {listOpen ? <ExpandLess style={{fontSize:'24pt', color: 'black'}}/> : <ExpandMore style={{fontSize:'24pt', color: 'black'}}/>}
                 </ListItemButton>
@@ -192,8 +202,8 @@ let buttonList =
                     }
                     { buttonList }
                     <Stack direction='row' justifyContent='space-between'>
-                        <Typography variant='h6' sx={{pl: 4, color: 'black'}}>Published: </Typography>
-                        <Typography variant='h6' sx={{pr: 4, color: 'black'}}>Listens: </Typography>
+                    <Typography variant='h6' sx={{pl: 4, color: 'white', userSelect: 'none'}}>Published: </Typography>
+                        <Typography variant='h6' sx={{pr: 4, color: 'white', userSelect: 'none'}}>Listens: </Typography>
                     </Stack>
                 </List>   
             </Collapse>
