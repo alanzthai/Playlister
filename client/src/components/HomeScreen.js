@@ -135,7 +135,7 @@ const HomeScreen = () => {
                                 <Typography variant="h4" color="white">Your Lists</Typography>
                     </Box>
         <div id="list-selector-heading">
-                <Typography variant="h4" color="black">Your Lists</Typography>
+                <Typography variant="h4" color="white">Your Lists</Typography>
         </div>
         </Grid>
         { sortMenu }

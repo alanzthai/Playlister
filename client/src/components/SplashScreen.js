@@ -34,6 +34,7 @@ export default function SplashScreen() {
                             <Button variant="contained"  onClick={handleLogIn}>Log In</Button>
                             <Button variant="contained"  onClick={handleGuest}>Continue as Guest</Button>
                     </Stack>
+                    <p id="splash-text">Created by Alan Thai</p>
                 </Grid>
             </Grid>
         </div>
