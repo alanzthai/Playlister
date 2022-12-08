@@ -1,81 +1,70 @@
-import { Card, CardContent, IconButton, Typography } from '@mui/material';
-import { Box } from '@mui/system';
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import YouTube from 'react-youtube';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
-import GlobalStoreContext from '../store';
+import PauseIcon from '@mui/icons-material/Pause';
+import { IconButton } from '@mui/material';
+import { useRef, useContext } from 'react';
+import { GlobalStoreContext } from '../store';
 
-export default function YoutubePlayer() {
-        // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
+export default function YouTubePlayerExample() {
+    const { store } = useContext(GlobalStoreContext);
+    // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
     // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
     // DEMONSTRATES HOW TO IMPLEMENT A PLAYLIST THAT MOVES
     // FROM ONE SONG TO THE NEXT
-    const { store } = useContext(GlobalStoreContext);
-    const [playing, setPlaying] = useState(false);
-
-
-    // THIS WILL STORE OUR YOUTUBE PLAYER
-    let player;
-    let PLAYER_NAME = 'youtube_player';
 
     // THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
-    let playlist = [];
 
-    if(store.currentList) {
+    let playlist = [];
+    let titles = [];
+    let artists = [];
+    let currentSong = null;
+    if (store.currentList){
         let songs = store.currentList.songs;
-        if (songs) {
-            for(let i = 0; i < songs.length; i++) {
-                playlist[i] = songs[i].youTubeId;
-            }
+        console.log(songs)
+        if (songs){
+            currentSong = 0;
+            titles = [];
+            artists = [];
+            playlist = [];
+
+            songs.forEach(song => { 
+                titles.push(song.title)
+                artists.push(song.artist)
+                playlist.push(song.youTubeId)
+            });
         }
+        
+
     }
+    
+    // this will allow us to interact with the player without having to interact with event.target
+    const videoPlayer = useRef(null);
 
     // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
-    let currentSong = store.currentSongIndex;
-
-    // DYNAMICALLY LOAD THE YOUTUBE API FOR USE
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    let firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    // THE onYouTubeIframeAPIReady FUNCTION IS GLOBAL AND GETS CALLED
-    // WHEN WHEN THE YOUTUBE API HAS BEEN LOADED AS A RESULT OF
-    // OUR DYNAMICALLY LOADING INTO OUR PAGE'S SCRIPT
-    function onYouTubeIframeAPIReady() {
-    // START OUR PLAYLIST AT THE BEGINNING
-        currentSong = 0;
-    }
-    // NOW MAKE OUR PLAYER WITH OUR DESIRED PROPERTIES
-    let playerOptions = {
-        height: '390',
-        width: '800',
-        playerVars: {
-            autoplay: 0,
-        },
-    };
-    let playlistName = store.currentList ? store.currentList.name : ""
-    let currentSongIndex = store.currentSongIndex !== -1 ? store.currentSongIndex : ""
-    let title = ''
-    let artist = ''
-    if(store.currentSong) {
-        title = store.currentSong.title
-        artist = store.currentSong.artist
+    if (store.currentSongIndex){
+        currentSong = store.currentSongIndex;
     }
     
 
-    // THIS EVENT HANDLER GETS CALLED ONCE THE PLAYER IS CREATED
-    function onPlayerReady(event) {
-        event.target.playVideo();
-    }
+    const playerOptions = {
+        height: '270',
+        width: '450',
+        playerVars: {
+            // https://developers.google.com/youtube/player_parameters
+            autoplay: 0,
+        },
+    };
 
     // THIS FUNCTION LOADS THE CURRENT SONG INTO
     // THE PLAYER AND PLAYS IT
     function loadAndPlayCurrentSong(player) {
         let song = playlist[currentSong];
+        console.log(song)
         player.loadVideoById(song);
         player.playVideo();
     }
@@ -84,23 +73,43 @@ export default function YoutubePlayer() {
     function incSong() {
         currentSong++;
         currentSong = currentSong % playlist.length;
-        store.setCurrentSong(playlist[currentSong], currentSong);
+        store.displaySong(currentSong, store.currentList.songs[currentSong])
     }
 
     function decSong() {
         currentSong--;
-        currentSong = currentSong % playlist.length;
-        store.setCurrentSong(playlist[currentSong], currentSong);
+        if (currentSong < 0){
+            currentSong = playlist.length - 1;
+        }
+        else{
+            currentSong = currentSong % playlist.length;
+        }
+        store.displaySong(currentSong, store.currentList.songs[currentSong])
+        
     }
 
-    // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
-    // CHANGES. NOTE THAT playerStatus WILL HAVE A DIFFERENT INTEGER
-    // VALUE TO REPRESENT THE TYPE OF STATE CHANGE. A playerStatus
-    // VALUE OF 0 MEANS THE SONG PLAYING HAS ENDED.
     function onPlayerReady(event) {
-        loadAndPlayCurrentSong(event.target);
-        event.target.playVideo();
+        videoPlayer.current = event.target 
     }
+
+    function handlePrevious(){
+        decSong();
+        loadAndPlayCurrentSong(videoPlayer.current);
+    }
+
+    function handlePause(){
+        videoPlayer.current.pauseVideo()
+    }
+
+    function handlePlay(){
+        videoPlayer.current.playVideo();
+    }
+
+    function handleNext(){
+        incSong();
+        loadAndPlayCurrentSong(videoPlayer.current);
+    }
+
 
     // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
     // CHANGES. NOTE THAT playerStatus WILL HAVE A DIFFERENT INTEGER
@@ -112,6 +121,7 @@ export default function YoutubePlayer() {
         if (playerStatus === -1) {
             // VIDEO UNSTARTED
             console.log("-1 Video unstarted");
+            videoPlayer.current = event.target 
         } else if (playerStatus === 0) {
             // THE VIDEO HAS COMPLETED PLAYING
             console.log("0 Video ended");
@@ -132,47 +142,66 @@ export default function YoutubePlayer() {
         }
     }
 
+    let info = ''
+    if (store.currentList){
+        info = store.currentList.name
+    }
+    
+    let card = 
+        <Box>
+            <Typography sx={{fontSize: '1.7rem', fontStyle: 'oblique',fontFamily: 'Monospace'}}>
+                Playlist: {info}
+            </Typography>
+            <Typography sx={{fontSize: '1.7rem', fontStyle: 'oblique',fontFamily: 'Monospace'}}>
+                Current Song: {titles[store.currentSongIndex]}
+            </Typography>
+            <Typography sx={{fontSize: '1.7rem', fontStyle: 'oblique',fontFamily: 'Monospace'}}>
+                Artist: {artists[store.currentSongIndex]}
+            </Typography>
+            <Box display="flex" justifyContent="center" alignItems="center">
+                <IconButton>
+                    <SkipPreviousIcon 
+                    sx={{fontSize: '2.5rem', color: 'black'}}
+                    onClick={handlePrevious}
+                    /> 
+                </IconButton>
+                <IconButton>
+                    <PauseIcon 
+                    sx={{fontSize: '2.5rem', color: 'black'}}
+                    onClick={handlePause}
+                    /> 
+                </IconButton>
+                <IconButton>
+                    <PlayArrowIcon 
+                    sx={{fontSize: '2.5rem', color: 'black'}}
+                    onClick={handlePlay}
+                    /> 
+                </IconButton>
+                <IconButton>
+                    <SkipNextIcon 
+                    sx={{fontSize: '2.5rem', color: 'black'}}
+                    onClick={handleNext}
+                    />
+                </IconButton>
+                
+            </Box>
+        </Box>
 
     return (
-        <Box display='flex' flexDirection='column' sx={{bgColor: 'blue', alignItems: 'center', justifyContent: 'center'}}>
-            <YouTube 
+        <>
+            <YouTube
+                id='videoPlayer'
+                ref={videoPlayer}
                 videoId={playlist[currentSong]}
                 opts={playerOptions}
                 onReady={onPlayerReady}
-                onStateChange={onPlayerStateChange}
-                />
-            <Card sx={{width: '100%',bgcolor: '#8000F00F'}}>
-                <CardContent>
-                    <Typography component="div" variant="h6" sx={{color: 'black', fontWeight: 1000, userSelect: 'none'}}>
-                        Now Playing
-                    </Typography>
-                    <Typography component="div" variant='p' sx={{color: 'black', fontWeight: 700, userSelect: 'none'}}>
-                        Playlist: {playlistName}
-                    </Typography>
-                    <Typography component="div" variant='p' sx={{color: 'black', fontWeight: 700, userSelect: 'none'}}>
-                        Song #: {currentSongIndex}
-                    </Typography>
-                    <Typography component="div" variant='p' sx={{color: 'black', fontWeight: 700, userSelect: 'none'}}>
-                        Title: {title} </Typography>
-                    <Typography component="div" variant='p' sx={{color: 'black', fontWeight: 700, userSelect: 'none'}}>
-                        Artist: {artist}</Typography>
-                </CardContent>
-                <Box sx={{pb: 1, }}>
-                    <IconButton onClick={decSong}>
-                        <SkipPreviousIcon fontSize='large' sx={{color: 'black'}}></SkipPreviousIcon>
-                    </IconButton>
-                    <IconButton onClick={onPlayerStateChange}>
-                        <PauseIcon fontSize='large' sx={{color: 'black'}}></PauseIcon>
-                    </IconButton>
-                    <IconButton onClick={onPlayerReady}>
-                        <PlayArrowIcon fontSize='large' sx={{color: 'black'}}></PlayArrowIcon>
-                    </IconButton>
-                    <IconButton onClick={incSong}>
-                        <SkipNextIcon fontSize='large' sx={{color: 'black'}}></SkipNextIcon>
-                    </IconButton>
-                </Box>
-            </Card>
-        </Box>
-    )
-
+                onStateChange={onPlayerStateChange} 
+            />
+            {card}
+        </>
+        
+        )
+        
+        ;
 }
+

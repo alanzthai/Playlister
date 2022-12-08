@@ -1,13 +1,18 @@
 import { Button, createTheme, Grid, Stack, ThemeProvider } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import GlobalStoreContext from "../store";
 import logo from "./logo.png";
+import AuthContext from '../auth';
+import { useContext, useState } from 'react';
+
 
 export default function SplashScreen() {
+    const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
+    const [anchorEl, setAnchorEl] = useState(null);
     const history = useHistory();
+    const isMenuOpen = Boolean(anchorEl);
 
     function handleRegister() {
         history.push("/register/");
@@ -17,9 +22,13 @@ export default function SplashScreen() {
         history.push("/login/");
     }
 
-    function handleGuest() {
-
+    function handleGuest () {
+        handleMenuClose();
+        auth.loginGuest();
     }
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <div id="splash-screen">

@@ -1,23 +1,30 @@
-import { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
-import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import { Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
-import AuthContext from '../auth';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import WorkspaceScreen from './WorkspaceScreen';
-import SongCard from './SongCard';
-import EditToolbar from './EditToolbar';
-import MUIDeleteModal from './MUIDeleteModal';
+import List from '@mui/material/List';
+import SongCard from './SongCard.js'
+import { Grid } from '@mui/material';
+import MUIEditSongModal from './MUIEditSongModal';
+import MUIRemoveSongModal from './MUIRemoveSongModal';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import MUINameErrorModal from './MUINameErrorModal';
+import UndoIcon from '@mui/icons-material/Undo';
 import AddIcon from '@mui/icons-material/Add';
+import RedoIcon from '@mui/icons-material/Redo';
+import PublishIcon from '@mui/icons-material/Publish';
+import AuthContext from '../auth';;
+
+
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -28,32 +35,89 @@ import AddIcon from '@mui/icons-material/Add';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const [ listOpen, setListOpen] = useState(false);
-    const { list, selected } = props;
+    const { idNamePair, selected } = props;
+    const [expanded, setExpanded] = React.useState(false);
+    const { auth } = useContext(AuthContext);
 
-    function handleLoadList(event, id) {
-        console.log("handleLoadList for " + id);
-        if (!event.target.disabled) {
-            let _id = event.target.id;
-            if (_id.indexOf('list-card-text-') >= 0)
-                _id = ("" + _id).substring("list-card-text-".length);
+    let guest = false
+    if (auth.user && auth.user.email === 'Guest@guest.com'){
+        guest = true
+    }
 
-            console.log("load " + event.target.id);
-
-            // CHANGE THE CURRENT LIST
-            if(!selected) {
-                store.setCurrentList(id);
-            } else {
-                store.closeCurrentList();
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+        if (store.currentList){
+            if (idNamePair._id === store.currentList._id){
+                store.closeCurrentList()
             }
+            else if (idNamePair._id !== store.currentList._id){
+                store.closeCurrentList()
+                store.setCurrentList1(idNamePair._id);
+            }
+        }   
+        else{
+            store.setCurrentList1(idNamePair._id);
         }
+
+    };
+    
+    let open = false;
+    if (!store.currentList){
+        
+    }
+    else{
+        if (store.currentList._id === idNamePair._id){
+            open = true
+        }
+        else{
+            open = false
+        }
+    }
+
+    let modalJSX = "";
+    if (store.isEditSongModalOpen()) {
+        modalJSX = <MUIEditSongModal />;
+    }
+    else if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />;
+    }
+    else if (store.isNameErrorModalOpen()){
+        modalJSX = <MUINameErrorModal />
+    }
+
+    let songs = <></>
+
+    if (open){
+        songs = 
+        <Box id="list-selector-list1" sx={{bgcolor:'Transparent'}}>
+        <List 
+            id="playlist-cards" 
+            sx={{overflow: 'auto' , height: '100%', width: '100%', bgcolor: 'Transparent'}}
+        >
+            {
+                store.currentList.songs.map((song, index) => (
+                    <SongCard
+                        id={'playlist-song-' + (index)}
+                        key={'playlist-song-' + (index)}
+                        index={index}
+                        song={song}
+                    />
+                ))  
+            }
+         </List>            
+         </Box>
     }
 
     function handleToggleEdit(event) {
         event.stopPropagation();
+        handleUpdateText(event)
+        if (store.listNameActive){
+            return
+        }
+        store.setCurrentList(idNamePair._id);
+        console.log(store)
         toggleEdit();
     }
 
@@ -67,52 +131,85 @@ function ListCard(props) {
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
-        let _id = event.target.id;
-        _id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
-    }
-
-    function handleLike(event) {
-        event.stopPropagation();
-        let index = list.dislikes.indexOf(list.ownerEmail);
-        if(index == -1) {
-            index = list.likes.indexOf(list.ownerEmail);
-            if(index != -1) {
-                list.likes.splice(index, 1);
-            }
-            list.dislikes.push(list.ownerEmail);
-        } else {
-            list.dislikes.splice(index, 1);
-        }
-        store.updateList(list._id, list);
-    }
-
-    function handleDislike(event) {
-        list.dislikes = list.dislikes + 1;
-        store.updateList(list._id, list);
-    }
-
-    async function handlePublishList(event, id) {
-
-    }
-
-    async function handleDuplicateList(event, id) {
-        
-    }
-
-    function handleAddNewSong() {
-        store.addNewSong();
+        // let _id = event.target.id;
+        // _id = ("" + _id).substring("delete-list-".length);
+        store.markListForDeletion(store.currentList._id);
     }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
+            if (text === ''){
+                store.showNameErrorModal();
+                return;
+            }
+            for (let i = 0; i < store.idNamePairs.length; i++){
+                if (event.target.value === store.idNamePairs[i].name){
+                    if (event.target.value === store.idNamePairs[i].name && store.currentList._id != store.idNamePairs[i]._id ){
+                        console.log(store.idNamePairs.indexOf(store.currentList))
+                        store.showNameErrorModal();
+                        return;
+                    }
+                    
+                }
+            }
             let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
+            store.changeListName(id, event.target.value);
             toggleEdit();
         }
     }
     function handleUpdateText(event) {
         setText(event.target.value);
+    }
+
+    function handleAddNewSong(event) {
+        event.stopPropagation();
+        store.addNewSong();
+    }
+    function handleUndo(event) {
+        event.stopPropagation();
+        store.undo();
+    }
+    function handleRedo(event) {
+        event.stopPropagation();
+        store.redo();
+    }
+    function handleDuplicate() {
+        store.duplicateList();
+    }
+    function handlePublish(){
+        store.publish();
+    }
+    function handleLike(event){
+        event.stopPropagation();
+        if (idNamePair.likes.indexOf(auth.user.email) > -1){
+            store.likeList(auth.user.email ,idNamePair._id, 1)
+        }
+        else{
+            if (idNamePair.dislikes.indexOf(auth.user.email) > -1){
+                store.likeList(auth.user.email ,idNamePair._id, 2)
+            }
+            else{
+                store.likeList(auth.user.email ,idNamePair._id, 0)
+            }
+            
+        }
+        
+    }
+    function handleDislike(event){
+        event.stopPropagation();
+        if (idNamePair.dislikes.indexOf(auth.user.email) > -1){
+            store.dislikeList(auth.user.email ,idNamePair._id, 1)
+        }
+        else{
+            if (idNamePair.likes.indexOf(auth.user.email) > -1){
+                store.dislikeList(auth.user.email ,idNamePair._id, 2)
+            }
+            else{
+                store.dislikeList(auth.user.email ,idNamePair._id, 0)
+            }
+            
+        }
+
     }
 
     let selectClass = "unselected-list-card";
@@ -124,101 +221,183 @@ function ListCard(props) {
         cardStatus = true;
     }
 
-    let userName = auth.user.firstName + ' ' + auth.user.lastName;
-    let cardElement =
-        <ListItem
-        id={list._id}
-        key={list._id}
-            sx={{borderRadius:"25px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1 }}
-            style={{transform:"translate(1%,0%)", width: '98%', fontSize: '48pt' }}
-        >
-            <ListItemText 
-                    primary={list.name} 
-                    secondary={"By:  " + userName} 
-                    primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 40}}}
-                    secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'black', fontSize: 20}}}
-                />
-            <Box sx={{p: 1}}>
-            <IconButton onClick={handleLike} aria-label='edit'>
-                <ThumbUpIcon style={{fontSize:'24pt', color: 'black'}}/>
-                </IconButton>
-            </Box>
-            <Box sx={{p: 1}}>
-            <Typography>{list.likes.length}</Typography>
-            </Box>
-            <Box sx={{p: 1}}>
-            <IconButton onClick={handleDislike} aria-label='edit'>
-                                <ThumbDownIcon style={{fontSize:'24pt', color: 'black'}} />
-                            </IconButton>
-            </Box>
-            <Box sx={{p: 1}}>
-            <Typography>{list.dislikes.length}</Typography>
-            </Box>
-            <Box sx={{p: 1}}>
-            <ListItemButton 
-                onClick={(event) => {
-                    handleLoadList(event, list._id)
-                }}>
-                    {selected ? <ExpandLess style={{fontSize:'24pt', color: 'black'}}/> : <ExpandMore style={{fontSize:'24pt', color: 'black'}}/>}
-                </ListItemButton>
-            </Box>
-        </ListItem>
-
-let buttonList = 
-<Stack direction='row' justifyContent='space-between'>
-    <Box display="flex" 
-    p={2} m={1} 
-    justifyContent='flex-start' 
-    alignItems='flex-start'
-    >
-        <EditToolbar/>
-    </Box>
-    <Box display="flex" 
-    p={2} m={1} 
-    justifyContent='flex-end' 
-    alignItems='flex-end'
-    >
-        <Stack direction='row' spacing={2}>
-            <Button variant='contained'>Publish</Button>
-            <Button variant='contained'>Delete</Button>
-            <Button variant='contained'>Duplicate</Button>
-        </Stack>
-    </Box>
-</Stack>
-
-    if(selected) {
-        return (
-            <div>
-            {cardElement}
-            <Collapse in={selected} timeout='auto' unmountOnExit>
-                <List 
-                    component='div'
-                    disablePadding
-                    id="playlist-cards"
-                    sx={{ width: '100%', pb: 1}}
-            >
-                    {
-
-                        store.currentList.songs.map((song, index) => (
-                            <SongCard
-                                id={'playlist-song-' + (index)}
-                                key={'playlist-song-' + (index)}
-                                index={index}
-                                song={song}
-                                sx={{bgcolor: 'white'}}
-                            />
-                        ))  
-                    }
-                    { buttonList }
-                    <Stack direction='row' justifyContent='space-between'>
-                    <Typography variant='h6' sx={{pl: 4, color: 'black', userSelect: 'none'}}>Published: </Typography>
-                        <Typography variant='h6' sx={{pr: 4, color: 'black', userSelect: 'none'}}>Listens: </Typography>
-                    </Stack>
-                </List>   
-            </Collapse>
-        </div>
-        )
+    let published = <></>
+    if (idNamePair.published){
+        let date = new Date(idNamePair.publishDate)
+        published = 
+        <>
+            <Grid container>
+                <Grid item xs={10}>
+                    <Typography sx={{fontFamily:"Lexend Exa", fontSize:'18px'}}>
+                        Published: {date.toLocaleDateString()}     
+                    </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <Typography sx={{transform:"translate(140%,-10%)", fontFamily:"Lexend Exa", fontSize:'18px'}}>
+                        Views: {idNamePair.listens}
+                    </Typography>
+                </Grid>
+                
+            </Grid>
+            
+        </>
+        
     }
+    
+    let dislikeColor = ''
+    if (idNamePair.dislikes.indexOf(auth.user.email) > -1){
+        dislikeColor = 'black'
+    }
+    let likeColor = ''
+    if (idNamePair.likes.indexOf(auth.user.email) > -1){
+        likeColor = 'black'
+    }
+
+    let likeDislike = <></>
+    if (idNamePair.published){
+        likeDislike = 
+            <>
+                <Box sx={{ p: 1 }} elevation={0}>
+                    <IconButton onClick={handleLike} disabled={guest}>
+                        <ThumbUpIcon style={{fontSize:'24pt'}} sx={{color: likeColor}}/>
+                        <Typography sx={{transform:"translate(30%,0%)"}}>
+                            {idNamePair.likes.length}
+                        </Typography>
+                    </IconButton> 
+                </Box>
+                <Box sx={{ p: 1 }} elevation={0}>
+                    <IconButton onClick={handleDislike} disabled={guest}>
+                        <ThumbDownIcon style={{fontSize:'24pt'}} sx={{color: dislikeColor}}/> {/* use event.stoppropagation */}
+                        <Typography sx={{transform:"translate(30%,0%)"}}>
+                            {idNamePair.dislikes.length}
+                        </Typography>
+                    </IconButton> 
+                </Box>
+            </>
+    }
+
+    let card = 
+    <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        id={idNamePair._id}
+        key={idNamePair._id}
+        sx={{borderRadius:"30px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1, "&:hover":{backgroundColor: "white"}, }}
+        style={{transform:"translate(0%,0%)", width: '100%', fontSize: '24pt' }}
+    >
+        <Box sx={{ p: 1, flexGrow: 1 }} elevation={0} onDoubleClick={handleToggleEdit}>{idNamePair.name} 
+        <Typography sx={{fontFamily:"Lexend Exa", fontSize:'18px'}}>
+            By: {idNamePair.ownerName}
+        </Typography>
+            {published}
+        </Box>
+        {likeDislike}
+    </AccordionSummary>
+    if (editActive && open && !store.currentList.published){
+        card = 
+        <TextField
+            margin="normal"
+            required
+            fullWidth
+            id={"list-" + idNamePair._id}
+            label="Playlist Name"
+            name="name"
+            autoComplete="Playlist Name"
+            className='list-card'
+            onKeyPress={handleKeyPress}
+            onChange={handleUpdateText}
+            defaultValue={idNamePair.name}
+            inputProps={{style: {fontSize: 48}}}
+            InputLabelProps={{style: {fontSize: 24}}}
+            autoFocus
+        />
+    }
+
+    let buttons = <></>
+    let upload = <></>
+
+    if (open && !store.currentList.published){
+        buttons = 
+        <>
+            <IconButton onClick={handleUndo} disabled={!store.canUndo()} sx={{color:'black'}}>
+            <   UndoIcon
+                    sx={{fontSize: '2.8rem', m: 2}}
+                />
+            </IconButton>
+            <IconButton onClick={handleAddNewSong} disabled={!store.canAddNewSong()}>
+                <AddIcon
+                    sx={{fontSize: '2.8rem', m: 2, color:'black'}}
+                />
+            </IconButton>
+            <IconButton onClick={handleRedo} disabled={!store.canRedo()} sx={{color:'black'}}>
+                <RedoIcon
+                    sx={{fontSize: '2.8rem', m: 2}}
+                />
+            </IconButton>
+        </>
+
+        upload = 
+        <>
+            <IconButton sx={{color:'black'}} onClick={handlePublish}>
+                <PublishIcon
+                    sx={{fontSize: '2.8rem', m: 2}}
+                />
+            </IconButton>
+        </>
+        
+    }
+    let disabled = false
+    if (guest || store.currentList && auth.user.email !== store.currentList.ownerEmail){
+        console.log(auth.user.email)
+        console.log(idNamePair.ownerEmail)
+        disabled = true
+    }
+
+
+    let cardElement =
+        <Accordion 
+            // disabled={!open}
+            expanded={open} 
+            onChange={handleChange('panel' + idNamePair._id)} 
+            // onClick={(event) => {
+            //     handleLoadList(event, idNamePair._id)
+            // }}
+            sx={{bgcolor: '#8000F00F', borderRadius:"30px", borderTopLeftRadius:'27px'}}
+            disableGutters={true}
+        >
+            {card}
+            <AccordionDetails>
+                <Grid container sx={{alignItems: 'center', transform:"translate(0%,-10%)", bgcolor:''}} >
+                    <Grid item xs={12} position='relative' height={'400px'} sx={{borderRadius:"30px"}}>
+                            {songs}
+                    </Grid>
+                    <Grid item xs={4}>
+                        {buttons}
+                    </Grid>
+                    <Grid item xs={4}>
+                    </Grid>
+                    <Grid item xs={1}>
+                        {upload}
+                    </Grid>
+                    <Grid item xs={3}>
+                        <IconButton onClick={handleDeleteList} disabled={disabled} sx={{color: 'black'}}>
+                            <DeleteForeverIcon
+                                sx={{fontSize: '2.8rem', m: 2}}
+                            />
+                        </IconButton>
+                        <IconButton onClick={handleDuplicate} disabled={guest} sx={{color: 'black'}}>
+                            <ContentCopyIcon
+                                sx={{fontSize: '2.8rem', m: 2}}
+                            />
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+
+                    </Grid>
+                </Grid>
+            </AccordionDetails>
+            { modalJSX }
+        </Accordion>
+        
     return (
         cardElement
     );

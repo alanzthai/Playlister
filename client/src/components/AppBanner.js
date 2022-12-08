@@ -33,6 +33,11 @@ export default function AppBanner() {
         auth.logoutUser();
     }
 
+    const handleGuest = () => {
+        handleMenuClose();
+        auth.loginGuest();
+    }
+
     const handleHouseClick = () => {
         store.closeCurrentList();
     }
@@ -56,6 +61,7 @@ export default function AppBanner() {
         >
             <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleGuest}><Link to='/'>Continue as Guest</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
@@ -88,6 +94,9 @@ export default function AppBanner() {
     
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();
+        if (auth.user && auth.user.email === 'Guest@guest.com'){
+            userInitials = 'G'
+        }
         console.log("userInitials: " + userInitials);
         if (loggedIn) 
             return <div>{userInitials}</div>;
@@ -95,9 +104,14 @@ export default function AppBanner() {
             return <AccountCircle />;
     }
 
+    let houseIcon = <></>;
+    if (!auth.user){
+        houseIcon = <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>;
+    }
+
     return (
         <Box sx={{flexGrow: 1}}>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ bgcolor: "black" }}>
                 <Toolbar>
                     <Typography                        
                         variant="h4"
