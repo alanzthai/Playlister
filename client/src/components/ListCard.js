@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import List from '@mui/material/List';
 import SongCard from './SongCard.js'
-import { Grid } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import MUIEditSongModal from './MUIEditSongModal';
 import MUIRemoveSongModal from './MUIRemoveSongModal';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -318,30 +318,28 @@ function ListCard(props) {
     if (open && !store.currentList.published){
         buttons = 
         <>
-            <IconButton onClick={handleUndo} disabled={!store.canUndo()} sx={{color:'black'}}>
-            <   UndoIcon
-                    sx={{fontSize: '2.8rem', m: 2}}
-                />
-            </IconButton>
-            <IconButton onClick={handleAddNewSong} disabled={!store.canAddNewSong()}>
+            <Button variant={"contained"} onClick={handleAddNewSong} disabled={!store.canAddNewSong()}>
                 <AddIcon
-                    sx={{fontSize: '2.8rem', m: 2, color:'black'}}
+                   
                 />
-            </IconButton>
-            <IconButton onClick={handleRedo} disabled={!store.canRedo()} sx={{color:'black'}}>
+                </Button>
+            <Button variant={"contained"} onClick={handleUndo} disabled={!store.canUndo()}>
+            <   UndoIcon
+
+                />
+            </Button>
+            <Button variant={"contained"} onClick={handleRedo} disabled={!store.canRedo()}>
                 <RedoIcon
-                    sx={{fontSize: '2.8rem', m: 2}}
+
                 />
-            </IconButton>
+            </Button>
         </>
 
         upload = 
         <>
-            <IconButton sx={{color:'black'}} onClick={handlePublish}>
-                <PublishIcon
-                    sx={{fontSize: '2.8rem', m: 2}}
-                />
-            </IconButton>
+            <Button variant = 'contained' onClick={handlePublish}>
+                Publish
+            </Button>
         </>
         
     }
@@ -378,17 +376,13 @@ function ListCard(props) {
                     <Grid item xs={1}>
                         {upload}
                     </Grid>
-                    <Grid item xs={3}>
-                        <IconButton onClick={handleDeleteList} disabled={disabled} sx={{color: 'black'}}>
-                            <DeleteForeverIcon
-                                sx={{fontSize: '2.8rem', m: 2}}
-                            />
-                        </IconButton>
-                        <IconButton onClick={handleDuplicate} disabled={guest} sx={{color: 'black'}}>
-                            <ContentCopyIcon
-                                sx={{fontSize: '2.8rem', m: 2}}
-                            />
-                        </IconButton>
+                    <Grid item xs={3} direction = {'row'} spacing = {4}>
+                        <Button variant = 'contained' onClick={handleDeleteList} disabled={disabled}>
+                            Delete
+                        </Button>
+                        <Button variant = 'contained' onClick={handleDuplicate} disabled={disabled}>
+                            Duplicate
+                        </Button>
                     </Grid>
                     <Grid item>
 

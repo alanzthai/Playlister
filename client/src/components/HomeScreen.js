@@ -249,19 +249,19 @@ const HomeScreen = () => {
         listCard = 
             <Grid container>
                 <Grid item xs={10} sx={{backgroundColor: 'black'}}>
-                    <IconButton disabled={guest} onClick={handleHome}>
+                <IconButton disabled={guest || store.display[0] === 0} onClick={handleHome} sx={{color: 'white'}}>
                         <HomeIcon 
-                            sx={{fontSize: '2.8rem', m: 1, color: 'white'}}
+                            sx={{fontSize: '2.8rem', m: 1}}
                         /> 
                     </IconButton>
-                    <IconButton onClick={handleGroup}>
+                    <IconButton onClick={handleGroup} disabled={store.display[0] === 1} sx={{color: 'white'}}>
                         <GroupIcon
-                            sx={{fontSize: '2.8rem', m: 1, color: 'white'}}
+                            sx={{fontSize: '2.8rem', m: 1}}
                         />
                     </IconButton>    
-                    <IconButton onClick={handleUser}>
+                    <IconButton onClick={handleUser} disabled={store.display[0] === 2} sx={{color: 'white'}}>
                         <PersonIcon
-                            sx={{fontSize: '2.8rem', m: 1, color: 'white'}}
+                            sx={{fontSize: '2.8rem', m: 1}}
                         />
                     </IconButton>
                         

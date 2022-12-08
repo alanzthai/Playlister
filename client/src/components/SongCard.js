@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
-import ClearIcon from '@mui/icons-material/Clear';
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
@@ -67,15 +66,12 @@ function SongCard(props) {
     let deleteButton = <></>
     if (store.currentList && !store.currentList.published){
         deleteButton = 
-        <IconButton
+        <Button
                 sx={{transform:"translate(-5%, -5%)", width:"5px", height:"30px"}}
                 variant="contained"
                 id={"remove-song-" + index}
                 className="list-card-button"
-                onClick={handleRemoveSong}
-            > 
-                <ClearIcon/>
-        </IconButton>
+                onClick={handleRemoveSong}>{"\u2715"}</Button>
     }
 
     let cardClass = "list-card unselected-list-card";
