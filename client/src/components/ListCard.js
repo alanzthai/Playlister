@@ -13,15 +13,12 @@ import SongCard from './SongCard.js'
 import { Grid, Button } from '@mui/material';
 import MUIEditSongModal from './MUIEditSongModal';
 import MUIRemoveSongModal from './MUIRemoveSongModal';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import MUINameErrorModal from './MUINameErrorModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import AddIcon from '@mui/icons-material/Add';
 import RedoIcon from '@mui/icons-material/Redo';
-import PublishIcon from '@mui/icons-material/Publish';
 import AuthContext from '../auth';;
 
 
@@ -259,7 +256,7 @@ function ListCard(props) {
             <>
                 <Box sx={{ p: 1 }} elevation={0}>
                     <IconButton onClick={handleLike} disabled={guest}>
-                        <ThumbUpIcon style={{fontSize:'24pt'}} sx={{color: likeColor}}/>
+                        <ThumbUpIcon style={{fontSize:'24pt'}} sx={{color: 'black'}}/>
                         <Typography sx={{transform:"translate(30%,0%)"}}>
                             {idNamePair.likes.length}
                         </Typography>
@@ -267,7 +264,7 @@ function ListCard(props) {
                 </Box>
                 <Box sx={{ p: 1 }} elevation={0}>
                     <IconButton onClick={handleDislike} disabled={guest}>
-                        <ThumbDownIcon style={{fontSize:'24pt'}} sx={{color: dislikeColor}}/> {/* use event.stoppropagation */}
+                        <ThumbDownIcon style={{fontSize:'24pt'}} sx={{color: 'black'}}/> {/* use event.stoppropagation */}
                         <Typography sx={{transform:"translate(30%,0%)"}}>
                             {idNamePair.dislikes.length}
                         </Typography>
