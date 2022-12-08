@@ -353,18 +353,14 @@ function ListCard(props) {
 
     let cardElement =
         <Accordion 
-            // disabled={!open}
             expanded={open} 
             onChange={handleChange('panel' + idNamePair._id)} 
-            // onClick={(event) => {
-            //     handleLoadList(event, idNamePair._id)
-            // }}
             sx={{bgcolor: '#8000F00F', borderRadius:"30px", borderTopLeftRadius:'27px'}}
             disableGutters={true}
         >
             {card}
             <AccordionDetails>
-                <Grid container sx={{alignItems: 'center', transform:"translate(0%,-10%)", bgcolor:''}} >
+                <Grid container sx={{alignItems: 'center', bgcolor:''}} >
                     <Grid item xs={12} position='relative' height={'400px'} sx={{borderRadius:"30px"}}>
                             {songs}
                     </Grid>
