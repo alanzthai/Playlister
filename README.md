@@ -18,6 +18,6 @@ Playlister is a full-stack interactive music playlist application built using th
 - **Other Technologies**: Mongoose (for MongoDB object modeling), JWT (for authentication), bcrypt (for password hashing)
 
 ## Usage
-Sign Up/Login: Create a new account or log in to an existing account.
-Create Playlist: Navigate to the "Create Playlist" section to start a new playlist.
-Manage Playlists: Edit or delete your playlists from the dashboard.
+- **Sign Up/Login**: Create a new account or log in to an existing account.
+- **Create Playlist**: Navigate to the "Create Playlist" section to start a new playlist.
+- **Manage Playlists**: Edit or delete your playlists from the dashboard.
